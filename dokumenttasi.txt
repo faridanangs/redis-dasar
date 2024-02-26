@@ -1,0 +1,142 @@
+####### di tutorial ini kita menggunakan ubuntu maka kita harus buat file confignya di dalam ubuntunya
+
+### cara menjalankan redis cukup gunakan printah
+   ~ redis-server
+ - trus kita jalankan dengan printah
+   ~ redis-cli -h localhost -p 6379
+   - -h = host
+   - -p = port
+ - untuk menjalankan redis dengan configuration yang kita buat
+   ~ redis-server  config/redis.conf
+
+### untuk mengecek apakah server sudah berjalan ketik saja
+   ~ ping, jika di balas pong berarti server sudah berjalan
+	
+### configurasi file
+ - redis tdk butuh connfig file
+ - jika tidak menggunakan config file, maka redis menggunakan config default
+ - ada baiknya kita membuat file config agar pengatrannya bisa di ubah
+
+### Database
+ - redis memiliki konsep yg sama seperti mysql dll
+ - di redis kita bisa membuat dan used databasenya
+ - namun di redis dia agak berbeda karna nama databasenya berupa angka dan database dafaultnya adalah 0
+ - kita bisa menggunakan db sejumlah maxs sesuai dengan config yang kita gunakan di file config
+ - untuk melihat penjelanan yng detail dengan jumlah db KETIK AJA ' databases ' di pencarian vscode
+
+### Oprasi database
+  Oprasi              | Keterangan
+  - select database    - select database-number
+
+  # contoh
+   ~ select 15
+
+### Strukture data redis
+ - redis sebnarnya mndkung struktur data yg banyak, like String,List, Set dll
+ - nmun yg paling banyak di gunakan adalah String
+ - *Untuk lihat operasi data stringnnya lihat saja di
+   ~ C:\Users\ASUS Vivobook\OneDrive\Pictures\Screenshots\operasi-string-redis.png
+ 
+ #### Data String
+ # Contoh perintah redis string
+  - 1 = berhasil
+  - 0 = gagal
+
+  localhost:6379> set test "anang s"
+  OK
+  localhost:6379> get test
+  "anang s"
+  localhost:6379> exists test
+  (integer) 1
+  localhost:6379> exists tests
+  (integer) 0
+  localhost:6379> append test " love diana"
+  (integer) 18
+  localhost:6379> get test
+  "anang s love diana"
+  localhost:6379> keys *
+  1) "test"
+  localhost:6379> keys te*
+  1) "test"
+  localhost:6379> del nang
+  (integer) 0
+  localhost:6379> del test
+  integer) 1
+ 
+ ## Oprasi range data string
+  - setrange key offset value = mengubah value dari offset yg sudah di tentukan
+  - getrange key start end = mengambil value dari range yang di tentukan
+ # Contoh oprasi
+   localhost:6379> set test "farid"
+   OK
+   localhost:6379> setrange test 5 "anang s"
+   (integer) 12
+   localhost:6379> get test
+   "faridanang s"
+   localhost:6379> getrange test 5 12
+   "anang s"
+   localhost:6379>
+
+  ## Operasi multiple data string
+   - mget key [key ...] = get the values of all the given keys
+   - mset key value [key value ...] = set multiple keys to multiple values
+  # Contoh oprasi
+   localhost:6379> mset test "5000" test2 "10000"
+   OK
+   localhost:6379> mget test test2
+   1) "5000"
+   2) "10000"
+ 
+ ### Expiration
+  - secara default, redis menyimpan datanya secara permanen sampai kita menghapusnya
+  - kita bisa menghapus data di redis secara otomatis menggunakan expired
+ # oprasi Expiration
+  - expire key second  = set a keys time to live in second
+  - setex key second value = set the value and expire of a key
+  - ttl key  = get the time to live for a key
+ # Contoh oprasi
+  localhost:6379> setex test1 20 "test 1"
+  OK
+  localhost:6379> set test2 "test 2"
+  OK
+  localhost:6379> expire test2 20
+  (integer) 1
+  localhost:6379> keys *
+  1) "test2"
+  localhost:6379> keys *
+  (empty array)
+
+ ### Increment dan Decrement
+  - jika oprasi di lakuakn secara paralel dan dlam waktu yang sangat cepat, hal ini bisa memungkinkan race condition
+  - untungnya redis memiliki oprasi untuk melakukan inc dan dec
+ # Oprasi incr dan Decrement
+  ~ incr key = Increment the integer value of key by One
+  ~ decr key = decr the integer value of key by One
+  ~ incrby key increment   = increment the integer value of key by the given amount
+  ~ decrby key decrement   = decrement the integer value of key by the given amount
+  -- jika keynya blum ada saat melakukan incr maka dia akan di buatkan secara otomatis oleh redis
+ # Contoh Oprasi
+  localhost:6379> get counter
+  (nil)
+  localhost:6379> incr counter
+  (integer) 1
+  localhost:6379> incr counter
+  (integer) 2
+  localhost:6379> decr counter
+  (integer) 1
+  localhost:6379>
+  localhost:6379> decr counter
+  (integer) 0
+  localhost:6379> decrby counter 5
+  (integer) -5
+  localhost:6379> incrby counter 6
+  (integer) 1
+  localhost:6379> get counter
+  "1"
+
+ ### Flush
+  - kadang kita butuh menghapus smua data di redis, misal karna terjadi kelasalahn kode sehingga data di redis salah
+  - mengpaus data di redis menggunakan oprasi delete buknlah hal bijak
+  - redis memiliki fitur untuk menghapus sluruh data di db redis, yaitu oprasi FLUSH
+
+  
